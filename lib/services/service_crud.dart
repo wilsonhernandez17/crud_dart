@@ -9,13 +9,16 @@ class ServiceCRUD extends MyService{
 
 
 
-  Future<String> createDoc(String ruta, Map<String, dynamic> json)async{
-    CollectionReference collectionReference = FirebaseFirestore.instance.collection(ruta);
-    return collectionReference.add(json).then((value){
-     return value.id;
+  Future<String> createDoc(String ruta,String ruta2,String id, Map<String, dynamic> json,bool isDelete)async{
+
+      CollectionReference collectionReference = FirebaseFirestore.instance.collection(ruta);
+      return collectionReference.doc(id).collection(ruta2).add(json).then((value) => value.id).catchError((onError)=>'');
+
+   /* return collectionReference.add(json).then((value){
+      return value.id;
     }).catchError((onError){
       return '';
-    });
+    });*/
   }
 
 
@@ -23,35 +26,42 @@ class ServiceCRUD extends MyService{
     CollectionReference collectionReference = FirebaseFirestore.instance.collection(ruta);
     return collectionReference.doc(id).collection(ruta2).add(json).then((value) => value.id).catchError((onError)=>'');
   }
-  Future<Map<String, dynamic>> readDoc(String ruta,String id){
+  Future<List<Map<String, dynamic>>> readDoc(String ruta,String ruta2,String id){
 
    return FirebaseFirestore.instance
         .collection(ruta)
         .doc(id)
+        .collection(ruta2)
         .get()
         .then((  value){
-          if(value.exists){
-            return  Future.value(value.data());
+          if(value.size!=0){
+            return  Future.value(value.docs.map((e) => e.data()).toList());
           }else{
-            return Future.value({});
+            return Future.value();
           }
    });
   }
   Future<String> updateDoc(String ruta, Map<String, dynamic> json, String? id)async{
-
-    CollectionReference users = FirebaseFirestore.instance.collection(ruta);
-    return users.doc(id).set(json,SetOptions(merge: true)).then((value) => 'Actualizacion exitosa').catchError((onError)=> 'A ocurrido un error');
+    CollectionReference collectionReference = FirebaseFirestore.instance.collection(ruta);
+    return collectionReference.doc(id).set(json,SetOptions(merge: true)).then((value) => 'Actualizacion exitosa').catchError((onError)=> 'A ocurrido un error');
 
   }
 
-  Future<String> deleteDoc(String ruta,String id){
-    CollectionReference users = FirebaseFirestore.instance.collection(ruta);
-    return users
-        .doc(id)
-        .delete()
-        .then((value) => "User Deleted")
-        .catchError((error) => "Failed to delete user: $error");
+   deleteDoc(String ruta,String ruta2,String id) {
+    CollectionReference collectionReference = FirebaseFirestore.instance
+        .collection(ruta);
+    WriteBatch batch = FirebaseFirestore.instance.batch();
 
+     collectionReference
+        .doc(id)
+        .collection(ruta2)
+        .get().then((querySnapshot) {
+      querySnapshot.docs.forEach((element) {
+        batch.delete(element.reference);
+      });
+      batch.commit();
+
+    });
   }
 }
 

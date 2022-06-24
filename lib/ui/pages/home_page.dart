@@ -18,8 +18,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-     //crearUsuario();
-    leerUsuario();
+    crearUsuario();
+    //leerUsuario();
     //updateUsuario();
     //deleteUsuario();
     //crearSubColeccion();
@@ -47,17 +47,15 @@ class _HomePageState extends State<HomePage> {
 
   crearUsuario(){
     Map<String, dynamic> json={
-    "nombre":"prueba",
-    "apellido":"prueba2",
-    "edad":20
+    "score":100
     };
-    ServiceCRUD().createDoc("usuarios", json).then((value) {
+    ServiceCRUD().createDoc("usuarios","score","5vEAOpe41utvhCuTJnaB", json,true).then((value) {
       print(value.toString());
     });
   }
 
   leerUsuario(){
-    ServiceCRUD().readDoc("usuarios","5vEAOpe41utvhCuTJnaB").then((  value) {
+    ServiceCRUD().readDoc("usuarios","score","5vEAOpe41utvhCuTJnaB").then((  value) {
       print(value);
     });
   }
@@ -74,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   deleteUsuario(){
-    ServiceCRUD().deleteDoc("usuarios", "5vEAOpe41utvhCuTJnaB").then((value) => print(value));
+   // ServiceCRUD().deleteDoc("usuarios", "5vEAOpe41utvhCuTJnaB").then((value) => print(value));
   }
 
   crearSubColeccion(){
