@@ -18,12 +18,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    crearUsuario();
-    //leerUsuario();
-    //updateUsuario();
-    //deleteUsuario();
-    //crearSubColeccion();
 
+  //crearSala();
+    //crearUsuario();
+     //addUsuarioSala();
+    //readSalas();
+    //createPartida();
+    //crearRonda();
+    //crearRespuesta();
+    //leerUsuarioSala();
+    //leerPartidas();
+    //leerRonda();
+    //leerRespuesta();
     return Scaffold(
         appBar: AppBar(
           title: const Text('CRUD'),
@@ -45,42 +51,81 @@ class _HomePageState extends State<HomePage> {
         ));
   }
 
-  crearUsuario(){
+  crearSala(){
     Map<String, dynamic> json={
-    "score":100
+    'nMaximoPersonas':5,
+      'nRounda':5,
+      'estado':false
     };
-    ServiceCRUD().createDoc("usuarios","score","5vEAOpe41utvhCuTJnaB", json,true).then((value) {
+    ServiceCRUD().createRoom(json).then((value) {
       print(value.toString());
     });
   }
+  crearUsuario(){
+    Map<String, dynamic> json={
+      'username':'mateo',
+      'nPartidasGanadas':5,
+      'nPartidasJugadas':5,
+    };
 
-  leerUsuario(){
-    ServiceCRUD().readDoc("usuarios","score","5vEAOpe41utvhCuTJnaB").then((  value) {
+    ServiceCRUD().createUser(json);
+  }
+  addUsuarioSala(){
+    Map<String, dynamic> json={
+      'id':'adsadasfdasdasf'
+    };
+
+    ServiceCRUD().addUser('UOcOlL1eOapIJ93Fgfka', json);
+  }
+
+  leerUsuarioSala(){
+    ServiceCRUD().readUser('UOcOlL1eOapIJ93Fgfka').then((value) => print(value));
+  }
+
+  readSalas(){
+    ServiceCRUD().readRoom().then((value) {
       print(value);
     });
   }
 
-  updateUsuario(){
+  createPartida(){
     Map<String, dynamic> json={
-      "nombre":"actualizacion",
-      "apellido":"actualizacion",
-      "edad":20
+      'idSala':'UOcOlL1eOapIJ93Fgfka',
+      'letras':['A','B','C'],
     };
-    ServiceCRUD().updateDoc("usuarios",json,"5vEAOpe41utvhCuTJnaB").then((value) => {
-      print(value)
+    ServiceCRUD().createGame('UOcOlL1eOapIJ93Fgfka', json).then((value) {
+      print(value);
     });
   }
 
-  deleteUsuario(){
-   // ServiceCRUD().deleteDoc("usuarios", "5vEAOpe41utvhCuTJnaB").then((value) => print(value));
+  leerPartidas(){
+    ServiceCRUD().readGame().then((value) => print(value));
   }
 
-  crearSubColeccion(){
-
+  crearRonda(){
     Map<String, dynamic> json={
-      "nombre":"sala1"
+      'letra':'A',
     };
+    ServiceCRUD().addCircle('OoAwtaOyRbG4G6h6GuKe','1', json).then((value) {
+      print(value);
+    });
+  }
 
-    ServiceCRUD().createSubDoc("usuarios", "salas", '8mZ7t7nDJTHnRa8EPXu4', json);
+  leerRonda(){
+    ServiceCRUD().readCircle('OoAwtaOyRbG4G6h6GuKe').then((value) => print(value));
+  }
+
+  crearRespuesta(){
+    Map<String, dynamic> json={
+      'idUsuario':'123456789',
+      'palabra':'Andres',
+      'puntaje':0,
+      'valida':false
+    };
+    ServiceCRUD().addResponse('OoAwtaOyRbG4G6h6GuKe', '1', json);
+  }
+
+  leerRespuesta(){
+    ServiceCRUD().readResponse('OoAwtaOyRbG4G6h6GuKe', '1').then((value) => print(value));
   }
 }
